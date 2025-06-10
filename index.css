@@ -1,0 +1,179 @@
+/*...... general .................................*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+.body {
+    width: 100%;
+
+    padding: 0 5rem;
+
+    overflow-x: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    
+    background-color: #228B22;
+}
+/*...... heading .................................*/
+.heading {
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.heading .title {
+    color: white;
+    text-shadow: 2px 2px 4px black;
+}
+
+.heading .button {
+    height: 2rem;
+
+    padding: 0 .5rem;
+
+    border: none;
+    border-radius: 8px;
+
+    box-shadow: 2px 2px 6px #1a471a;
+
+    color: black;
+    background-color: white;
+
+    cursor: pointer;
+
+    transition: all 1s ease;
+}
+
+.heading .button:hover {
+    color: white;
+    background-color: black;
+}
+
+/*...... sección superior ........................*/
+.top-section {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-section
+.foundations {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.top-section
+.stock-waste__container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 2rem;
+}
+
+/*...... sección inferior ........................*/
+.tableau {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+}
+
+/*...... forma de las cartas .....................*/
+.card-shape {
+    height: 14rem;
+    width: 9rem;
+
+    border: 3px solid white;
+    border-radius: 7px;
+}
+
+/*...... carta de ejemplo ........................*/
+.card {
+    height: 13rem;
+    width: 8rem;
+
+    border: 1px solid black;
+    border-radius: 7px;
+
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+}
+
+/*...... centrar objeto ..........................*/
+.center-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*...... columnas del tableau ....................*/
+.tableau 
+.column {
+    position: relative; /* necesario para posicionar cartas absolutamente dentro */
+    height: 16rem; /* ajusta según necesidad */
+    width: 9rem; /* igual que las cartas */
+}
+
+/*...... cartas en contenedores ..................*/
+/* HABRÁ QUE REFACTORIZAR */
+.stock {
+    padding-left: .35rem;
+    overflow: hidden;
+    
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
+}
+
+.waste {
+    padding-right: .35rem;
+    overflow: hidden;
+    
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 2rem;
+}
+
+.foundation {
+    padding-right: .35rem;
+    overflow: hidden;
+    
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 2rem;  
+}
+
+.column img.card {
+    position: absolute;
+    width: 8rem;
+    height: 13rem;
+    border: 1px solid black;
+    border-radius: 7px;
+
+    /* Por defecto: evitar que se acumulen en (0,0) */
+    z-index: 1;
+    transition: top 0.2s ease;
+}
+
+/*...... lógica de las cartas vueltas ............*/
+.face-down {
+    position: absolute;
+    width: 8rem;
+    height: 13rem;
+    border: 1px solid black;
+    border-radius: 7px;
+    background-color: crimson;
+    z-index: 0;
+}
