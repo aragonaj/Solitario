@@ -33,7 +33,7 @@ const shuffledArray = deckArray.sort((a,b) => 0.5 - Math.random());
 // accedo a las columnas del tableau
 const tableauColumns = document.getElementsByClassName('column');
 for (let i = 0; i < tableauColumns.length; i++){
-    console.log(tableauColumns[i]); // muestra cada una de las columnas
+    // console.log(tableauColumns[i]); // muestra cada una de las columnas
     // accedo a las cartas de la columna
     // Dentro del buccle: introduzco la ruta de la carta del mazo,
     // creo un elemento imagen donde voy a incluir la carta,
@@ -51,11 +51,13 @@ for (let i = 0; i < tableauColumns.length; i++){
         let backCardPath = deckPath + '/back.png';
         let cardPath = deckPath + "/" + shuffledArray[deckIndex] + ".png"; // le indico que carta del mazo debe enseñar mediante la ruta
         let imageTableau = document.createElement('img');
+
         let cardName = shuffledArray[deckIndex];
+        let cardFileName = cardName + ".png";
         // obtener información de la carta
-        let cardNumber = cardName.substring(0, 2);
-        let cardColor = cardName.charAt(3);
-        let cardSuit = cardName.split("-")[2];
+        let cardNumber = parseInt(cardFileName.substring(0, 2));
+        let cardColor = cardFileName.charAt(3);
+        let cardSuit = cardFileName.split("-")[2];
 
         imageTableau.className = "face-down"; // por defecto estará boca abajo
         imageTableau.src = backCardPath;
@@ -123,12 +125,6 @@ for (let i = 0; i < tableauColumns.length; i++) {
     tableauColumns[i].addEventListener('drop', e => {
         e.preventDefault();
 
-        // carta que se está arrastrando
-        // let draggedCardSrc = draggedCard.src;
-        // let draggedCardName = draggedCardSrc.substring(32, draggedCardSrc.length);
-        // let draggedCardNumber = parseInt(draggedCardName.substring(0, 2));
-        // let draggedCardColor = draggedCardName.charAt(3);
-
         if (tableauColumns[i] === draggedCard.parentElement) return; // añadido
         if (draggedCardsGroup.length === 0) return;
 
@@ -163,28 +159,10 @@ for (let i = 0; i < tableauColumns.length; i++) {
         // última carta de la columna del tableau
         let lastCard = tableauColumns[i].lastElementChild;
         let lastCardSrc = lastCard.src;
-        let lastCardName = lastCardSrc.substring(32, lastCardSrc.length);
+        let lastCardName = lastCardSrc.split('/').pop();
         let lastCardNumber = parseInt(lastCardName.substring(0, 2));
         let lastCardColor = lastCardName.charAt(3);
-        // lo mismo que lo de arriba, pero usando malas prácticas
-        // let targetSrc = e.target.src; // obtengo la fuente del elemento que se ha producido el elemento: el último de la columna
-        // let lastCardName = targetSrc.substring(32, targetSrc.length); // obtengo el nombre de la carta: va desde la posición 32 hasta el final
-        // let lastCardNumber = parseInt(lastCardName.substring(0, 2)); // obtengo el número de la carta
-        // let lastCardColor = lastCardName.charAt(3);
-
-        // condición 1: la carta arrastrada debe ser una unidad menor que la última carta de la columna del tableau
-        // condición 2: la carta arrastrada debe tener un color diferente a la última carta de la columna del tableau
-        // if (draggedCardNumber == (lastCardNumber - 1)){
-        //     if (draggedCardColor != lastCardColor){
-        //         tableauColumns[i].appendChild(draggedCard);
-        //     }// if.end
-        // }// if.end
-        // if (tableauColumns[i].children.length === 0) {
-        //     if (draggedCardNumber === 13) {
-        //         tableauColumns[i].appendChild(draggedCard);
-        //     }// if.end
-        //     return;
-        // }// if.end
+        
         if (draggedCardNumber === (lastCardNumber - 1) && draggedCardColor !== lastCardColor) {
             const originColumn = draggedCard.parentElement;
             for (let card of draggedCardsGroup) {
@@ -266,7 +244,7 @@ for (let i = 0; i < foundation.length; i++) {
         const originColumn = draggedCard.parentElement; // añadido
         // carta que se está arrastrando
         let draggedCardSrc = draggedCard.src;
-        let draggedCardFileName = draggedCardSrc.substring(32, draggedCardSrc.length);
+        let draggedCardFileName = draggedCardSrc.split('/').pop();
         let draggedCardNumber = parseInt(draggedCardFileName.substring(0, 2));
         let draggedCardSuit = draggedCardFileName.substring(5, 8);
         if (foundation[i].children.length === 0) {
@@ -282,7 +260,9 @@ for (let i = 0; i < foundation.length; i++) {
         let lastCard = foundation[i].lastElementChild;
         let lastFoundationCardSrc = lastCard.src;
         let lastFoundationCardFileName = lastFoundationCardSrc.split("/").pop();
-        // let lastFoundationCardFileName = lastFoundationCardSrc.substring(32, draggedCardSrc.length);
+        
+        let cardFileName = draggedCard.src.split("/").pop();
+        
         let lastFoundationCardNumber = parseInt(lastFoundationCardFileName.substring(0, 2));
         let lastFoundationCardSuit = lastFoundationCardFileName.substring(5, 8);
         // condición 1: la carta arrastrada debe ser una unidad mayor que la primera carta de la base
@@ -484,10 +464,6 @@ function initializeGame() {
     }
 }
 
-
 document.getElementById('restartButton').addEventListener('click', () => {
     initializeGame();
 });
-
-
-// El otro error se produce únicamente cuando el rey, seguido de varias cartas(no sé el número porque a veces no funciona con dos o tres, pero funciona con cinco o seis), se arrastra desde una columna y se deposita en otra, solo se deposita la carta del rey. Después de esto, una vez que está depositada la carta del rey, se pueden producir dos situaciones a la hora de deposita la siguiente carta, la Q: que se tengan que seguir colocando el resto de una en una, o bien que al colocar la Q, también se coloquen el resto de cartas(que es como tendría que funcionar). ¿A qué se puede deber?
