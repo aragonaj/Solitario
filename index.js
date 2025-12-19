@@ -1,4 +1,3 @@
-// https://www.youtube.com/watch?v=wP-yu5cDtNc
 // ........................................................................
 // ...... carta arrastrada ................................................
 let draggedCard = null;
@@ -18,11 +17,11 @@ const deckArray = [
 ];
 // ........................................................................
 // ...... llevar la cuenta del número de cartas ...........................
-var deckIndex = 0;
+let deckIndex = 0;
 // ........................................................................
 // ...... barajo las cartas del mazo ......................................
 // fuente: https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
-const shuffledArray = deckArray.sort((a,b) => 0.5 - Math.random());
+const shuffledArray = deckArray.toSorted((a, b) => 0.5 - Math.random());
 // ........................................................................
 // ...... funcionalidad drag and drop en tableau ..........................
 // ........................................................................
@@ -32,7 +31,7 @@ const shuffledArray = deckArray.sort((a,b) => 0.5 - Math.random());
 // - la j indica el número de carta de la columna
 // accedo a las columnas del tableau
 const tableauColumns = document.getElementsByClassName('column');
-for (let i = 0; i < tableauColumns.length; i++){
+for (let i = 0; i < tableauColumns.length; i++) {
     // console.log(tableauColumns[i]); // muestra cada una de las columnas
     // accedo a las cartas de la columna
     // Dentro del buccle: introduzco la ruta de la carta del mazo,
@@ -55,7 +54,7 @@ for (let i = 0; i < tableauColumns.length; i++){
         let cardName = shuffledArray[deckIndex];
         let cardFileName = cardName + ".png";
         // obtener información de la carta
-        let cardNumber = parseInt(cardFileName.substring(0, 2));
+        let cardNumber = Number.parseInt(cardFileName.substring(0, 2));
         let cardColor = cardFileName.charAt(3);
         let cardSuit = cardFileName.split("-")[2];
 
@@ -89,18 +88,17 @@ for (let i = 0; i < tableauColumns.length; i++){
                 // let movingCards = allCards.slice(index);
                 // función para obtener la información de las cartas arrastradas
                 function getCardInfo(card) {
-                    console.log("getCardInfo recibe carta:", card, card.dataset.number, card.dataset.color);
                     return {
-                        number: parseInt(card.dataset.number),
+                        number: Number.parseInt(card.dataset.number),
                         color: card.dataset.color
                     };
                 }// getCardInfo.end
                 let isValidMove = true;
-                for(let k = 0; k < movingCards.length - 1; k++){
+                for (let k = 0; k < movingCards.length - 1; k++) {
                     let currentCard = getCardInfo(movingCards[k]);
                     let nextCard = getCardInfo(movingCards[k + 1]);
                     console.log(`Comparando cartas: ${currentCard.number}${currentCard.color} con ${nextCard.number}${nextCard.color}`);
-                    if (currentCard.number !== nextCard.number + 1 || currentCard.color === nextCard.color){
+                    if (currentCard.number !== nextCard.number + 1 || currentCard.color === nextCard.color) {
                         isValidMove = false;
                         console.log("Movimiento inválido detectado en estas cartas");
                         break;
@@ -140,7 +138,7 @@ for (let i = 0; i < tableauColumns.length; i++) {
 
         let topCard = draggedCardsGroup[0];
         let topCardName = topCard.src.split("/").pop();
-        let draggedCardNumber = parseInt(topCardName.substring(0, 2));
+        let draggedCardNumber = Number.parseInt(topCardName.substring(0, 2));
         let draggedCardColor = topCardName.charAt(3);
 
         // solo se pueden depositar reyes, si la columna está vacía
@@ -160,9 +158,9 @@ for (let i = 0; i < tableauColumns.length; i++) {
         let lastCard = tableauColumns[i].lastElementChild;
         let lastCardSrc = lastCard.src;
         let lastCardName = lastCardSrc.split('/').pop();
-        let lastCardNumber = parseInt(lastCardName.substring(0, 2));
+        let lastCardNumber = Number.parseInt(lastCardName.substring(0, 2));
         let lastCardColor = lastCardName.charAt(3);
-        
+
         if (draggedCardNumber === (lastCardNumber - 1) && draggedCardColor !== lastCardColor) {
             const originColumn = draggedCard.parentElement;
             for (let card of draggedCardsGroup) {
@@ -216,6 +214,7 @@ wasteContainer.addEventListener('drop', e => {
     // para que solo se puedan añadir cartas del "stock"
     if (draggedCard.dataset.fromStock === "true") {
         wasteContainer.appendChild(draggedCard);
+        updateColumnLayout(wasteContainer); // modificado
         draggedCard.addEventListener('dragstart', e => {
             draggedCard = e.target;
             draggedCardsGroup = [draggedCard];
@@ -227,13 +226,11 @@ wasteContainer.addEventListener('dragover', e => {
 });
 // para volver a agregar cartas al "stock" cuando se hayan arrastrado todas al "waste"
 wasteContainer.addEventListener("click", () => {
-    if (stock.children.length == 0) {
-        let stockCards = wasteContainer.children; // obtiene todos hijos del elemento padre "waste"
-        while (stockCards.length > 0){
-            let topCard = wasteContainer.firstElementChild;
-            stock.append(topCard);
-        }// while.end
+    while (wasteContainer.children.length > 0) {
+        let card = wasteContainer.lastElementChild;
+        stock.insertBefore(card, stock.firstElementChild);
     }
+    updateColumnLayout(stock);
 });
 // ........................................................................
 // ...... funcionalidad drag and drop en foundations ......................
@@ -245,7 +242,7 @@ for (let i = 0; i < foundation.length; i++) {
         // carta que se está arrastrando
         let draggedCardSrc = draggedCard.src;
         let draggedCardFileName = draggedCardSrc.split('/').pop();
-        let draggedCardNumber = parseInt(draggedCardFileName.substring(0, 2));
+        let draggedCardNumber = Number.parseInt(draggedCardFileName.substring(0, 2));
         let draggedCardSuit = draggedCardFileName.substring(5, 8);
         if (foundation[i].children.length === 0) {
             // al principio, solo se permiten "ases"
@@ -260,14 +257,14 @@ for (let i = 0; i < foundation.length; i++) {
         let lastCard = foundation[i].lastElementChild;
         let lastFoundationCardSrc = lastCard.src;
         let lastFoundationCardFileName = lastFoundationCardSrc.split("/").pop();
-        
+
         let cardFileName = draggedCard.src.split("/").pop();
-        
-        let lastFoundationCardNumber = parseInt(lastFoundationCardFileName.substring(0, 2));
+
+        let lastFoundationCardNumber = Number.parseInt(lastFoundationCardFileName.substring(0, 2));
         let lastFoundationCardSuit = lastFoundationCardFileName.substring(5, 8);
         // condición 1: la carta arrastrada debe ser una unidad mayor que la primera carta de la base
         // condición 2: la carta arrastrada debe ser del mismo palo que la primera carta de la base
-        if (draggedCardNumber == (lastFoundationCardNumber + 1)){
+        if (draggedCardNumber == (lastFoundationCardNumber + 1)) {
             if (draggedCardSuit === lastFoundationCardSuit) {
                 foundation[i].appendChild(draggedCard);
                 updateColumnLayout(draggedCard.parentElement);
@@ -284,7 +281,7 @@ function updateColumnLayout(column) {
     const cards = column.querySelectorAll('img');
     console.log("Actualizar layout - cartas en columna:", cards.length);
     cards.forEach((card, index) => {
-        card.style.top = (index * 30) + "px"; 
+        card.style.top = (index * 30) + "px";
         card.style.zIndex = index + 1;
     });
 }
@@ -324,17 +321,23 @@ function revealNextCardInColumn(column) {
                 let movingCards = allCards.slice(index).filter(card => card.dataset.number && card.dataset.color);
 
                 function getCardInfo(card) {
-                    return {
-                        number: parseInt(card.dataset.number),
-                        color: card.dataset.color
-                    };
+                    let number, color;
+                    if (card.dataset.number && card.dataset.color) {
+                        number = Number.parseInt(card.dataset.number);
+                        color = card.dataset.color;
+                    } else {
+                        let cardFileName = card.src.split("/").pop();
+                        number = Number.parseInt(cardFileName.substring(0, 2));
+                        color = cardFileName.charAt(3);
+                    }
+                    return { number, color };
                 }
 
                 let isValidMove = true;
-                for(let k = 0; k < movingCards.length - 1; k++){
+                for (let k = 0; k < movingCards.length - 1; k++) {
                     let currentCard = getCardInfo(movingCards[k]);
                     let nextCard = getCardInfo(movingCards[k + 1]);
-                    if (currentCard.number !== nextCard.number + 1 || currentCard.color === nextCard.color){
+                    if (currentCard.number !== nextCard.number + 1 || currentCard.color === nextCard.color) {
                         isValidMove = false;
                         break;
                     }
@@ -414,11 +417,11 @@ function initializeGame() {
                         };
                     }// getCardInfo.end
                     let isValidMove = true;
-                    for(let k = 0; k < movingCards.length - 1; k++){
+                    for (let k = 0; k < movingCards.length - 1; k++) {
                         let currentCard = getCardInfo(movingCards[k]);
                         let nextCard = getCardInfo(movingCards[k + 1]);
                         console.log(`Comparando cartas: ${currentCard.number}${currentCard.color} con ${nextCard.number}${nextCard.color}`);
-                        if (currentCard.number !== nextCard.number + 1 || currentCard.color === nextCard.color){
+                        if (currentCard.number !== nextCard.number + 1 || currentCard.color === nextCard.color) {
                             isValidMove = false;
                             console.log("Movimiento inválido detectado en estas cartas");
                             break;
