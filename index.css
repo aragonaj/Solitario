@@ -93,6 +93,8 @@
     height: 14rem;
     width: 9rem;
 
+    position: relative;
+
     border: 3px solid white;
     border-radius: 7px;
 }
@@ -176,4 +178,5 @@
     border-radius: 7px;
     background-color: crimson;
     z-index: 0;
+
 }
